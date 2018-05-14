@@ -38,16 +38,14 @@ ap.add_argument("-i","--image",required=True,help = "Path to the image")
 args = vars(ap.parse_args())
 image = cv2.imread(args["image"])
 rects = detec(image,1)
-if len(rects) == 1 :
-    for rect in rects : 
-        x,y,w,h = rect.left(),rect.top(),rect.right(),rect.bottom()
-        
+for rect in rects : 
+        x,y,w,h = rect.left(),rect.top(),rect.right(),rect.bottom() 
         roi = image[y:h,x:w]
         bb = alignment.getLargestFaceBoundingBox(image)
         image_alignment = alignment.align(96, image, bb, landmarkIndices=AlignDlib.OUTER_EYES_AND_NOSE)
-        text = predict_face(image_alignment,4)
+        text = predict_face(image_alignment,0.5)
         cv2.putText(image,text,(x,y-10),cv2.FONT_ITALIC,1,(0,255,0),2)
         cv2.rectangle(image,(x,y),(w,h),(0,255,0),2)
-cv2.imshow("image",image)
-cv2.waitKey()
+        cv2.imshow("image",image)
+        cv2.waitKey()
 cv2.destroyAllWindows()
